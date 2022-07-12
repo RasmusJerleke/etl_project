@@ -39,3 +39,6 @@ scripts
 
 airflow:
 api_to_raw >> raw_to_harmonized >> [harmonized_to_staged, harmonized_to_visual]] >> [OK, FAIL]
+
+
+Kordinater, tid(validTime), air pressure(msl), temp(t), mean precipitation(pmean)
