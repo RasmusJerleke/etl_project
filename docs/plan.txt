@@ -1,0 +1,41 @@
+API : SMHI
+
+PIPELINE:
+	API - RAW
+	RAW - HARMON.
+	HARMON - STAGED(DB)
+
+	//(Ev. harmon - clean)	
+
+data
+	raw
+	harmonized
+scripts
+	api_to_raw.py
+	raw_to_harmonized.py
+	harmonized_staged.py	
+
+
+	API - RAW
+1. skapa funktion för att hämta api data i api_to_raw.py
+	ARGS: url, path(data/raw)
+	OUTPUT: ladda json-data i path
+	RETURN: Boolean 
+
+	RAW - HARMONIZED
+2. skapa funktion som omvandlar raw data till harmoniserad data i raw_to_harmonized.py
+	ARGS: path.in, path.out
+	OUTPUT: ladda json data i path.out
+	RETURN Boolean
+
+3. skapa funktion som laddar harmonized data till databas
+	ARGS: path
+	OUTPUT: ladda data i db
+	RETURN Boolean
+
+4. skapa python fil med funktion att skapa visualiseringsfiler
+	för harmoniserad data
+
+
+airflow:
+api_to_raw >> raw_to_harmonized >> [harmonized_to_staged, harmonized_to_visual]] >> [OK, FAIL]
