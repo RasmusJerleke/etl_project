@@ -1,0 +1,25 @@
+Install PostgreSQL
+
+To install PostgreSQL on WSL (ie. Ubuntu):
+
+    Open your WSL terminal (ie. Ubuntu).
+    Update your Ubuntu packages: sudo apt update
+    Once the packages have updated, install PostgreSQL (and the -contrib package which has some helpful utilities) with: sudo apt install postgresql postgresql-contrib
+    Confirm installation and get the version number: psql --version
+
+There are 3 commands you need to know once PostgreSQL is installed:
+
+    sudo service postgresql status for checking the status of your database.
+    sudo service postgresql start to start running your database.
+    sudo service postgresql stop to stop running your database.
+
+The default admin user, postgres, needs a password assigned in order to connect to a database. To set a password:
+
+    Enter the command: sudo passwd postgres
+    You will get a prompt to enter your new password.
+    Close and reopen your terminal.
+
+To run PostgreSQL with psql shell:
+
+    Start your postgres service: sudo service postgresql start
+    Connect to the postgres service and open the psql shell: sudo -u postgres psql
