@@ -28,7 +28,7 @@ class TestAll(unittest.TestCase):
 
     def test_raw_to_harmonize(self):
         raw_to_harmonized.harmonized_data('data/raw/data.json', 'data/harmonized/data.json')
-
+        # print(raw_to_harmonized.error_msg)
         
 
 if __name__ == '__main__':

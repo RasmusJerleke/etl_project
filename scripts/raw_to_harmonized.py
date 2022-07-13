@@ -1,7 +1,4 @@
-from itertools import groupby
-import json
-from logging.config import valid_ident
-from numpy import float32
+import json, os
 import pandas as pd
 
 
@@ -51,12 +48,11 @@ def harmonized_data(pathin, pathout):
         df[par] = df[par].map(lambda x : x[0])
 
     #write json to file
-    try:
-        with open(pathout, 'w') as f:
-            json.dump(df, f, indent=4)
-    except:
-        error_msg = f'failed to save files in {pathout}'
-    
+    if not os.path.isdir('/'.join(pathout.split('/')[:-1])):
+        error_msg = f'invalid path: {pathout}'
+        return False
+    df.to_json(pathout, indent=4)
+
     #everything worked
     error_msg = None
     return True
