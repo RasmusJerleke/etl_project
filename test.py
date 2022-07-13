@@ -27,7 +27,7 @@ class TestAll(unittest.TestCase):
         self.assertEqual('invalid path: data/bad_folder/data.json', api_to_raw.error_msg)
 
     def test_raw_to_harmonize(self):
-        raw_to_harmonized.harmonized_data('data/raw/data.json')
+        raw_to_harmonized.harmonized_data('data/raw/data.json', 'data/harmonized/data.json')
 
         
 

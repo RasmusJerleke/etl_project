@@ -10,33 +10,55 @@ import pandas as pd
 # 	OUTPUT: ladda json data i path.out
 # 	RETURN Boolean
 
+error_msg = ''
 
-with open('data/raw/data.json', 'r') as f:
-    json_data = json.load(f)
-time_series = json_data['timeSeries']
-normalized_data = pd.json_normalize (
-time_series,
-record_path=['parameters'],
-meta=['validTime'])
+def harmonized_data(pathin, pathout):
+    global error_msg
+    #try to open json data
+    try:
+        with open(pathin, 'r') as f:
+            json_data = json.load(f)
+    except:
+        error_msg = f'failed to open files from {pathin}'
+    
+    #select data from file
+    time_series = json_data['timeSeries']
+    normalized_data = pd.json_normalize (
+    time_series,
+    record_path=['parameters'],
+    meta=['validTime'])
 
-parameters = {
+    parameters = {
         't' : 'temperature', 
         'pmean' : 'mean_precipitation',
         'msl' : 'air_pressure',
         'Wsymb2' : 'weather_symbol'}
 
-df = pd.DataFrame(normalized_data)
-times = df['validTime']
-df = df[df['name'].isin(parameters.keys())]
-df = df.pivot(values='values', columns='name')
-df['date'] = times
+    df = pd.DataFrame(normalized_data)
+    times = df['validTime']
+    df = df[df['name'].isin(parameters.keys())]
+    df = df.pivot(values='values', columns='name')
+    df['date'] = times
 
-agg_func = {p:'first' for p in parameters}
-df = df.groupby('date', as_index=False).aggregate(agg_func)
-df.rename(columns = parameters, inplace = True)
-df = df.rename_axis(None, axis=1)
+    #aggregate by date
+    agg_func = {p:'first' for p in parameters}
+    df = df.groupby('date', as_index=False).aggregate(agg_func)
+    df.rename(columns = parameters, inplace = True)
+    df = df.rename_axis(None, axis=1)
+    
+    #transform object values into data types
+    for par in parameters.values():
+        df[par] = df[par].map(lambda x : x[0])
 
-for par in parameters.values():
-    df[par] = df[par].map(lambda x : x[0])
+    #write json to file
+    try:
+        with open(pathout, 'w') as f:
+            json.dump(df, f, indent=4)
+    except:
+        error_msg = f'failed to save files in {pathout}'
+    
+    #everything worked
+    error_msg = None
+    return True
 
-print(df)
+
