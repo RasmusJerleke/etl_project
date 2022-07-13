@@ -21,7 +21,6 @@ def temperature_plot():
     temps_noon = df_noon['temperature']
     dates_noon = df_noon['date'].dt.day
 
-
     fig, ax = plt.subplots()
 
     ax.plot(dates_mid, temps_mid, linewidth=2.0, color='red')
