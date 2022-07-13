@@ -36,7 +36,7 @@ df = df.groupby('date', as_index=False).aggregate(agg_func)
 df.rename(columns = parameters, inplace = True)
 df = df.rename_axis(None, axis=1)
 
-# import numpy as np
-# df = df.astype( {"temperature": np.dtype("float")} , errors='raise') 
+for par in parameters.values():
+    df[par] = df[par].map(lambda x : x[0])
 
 print(df)
