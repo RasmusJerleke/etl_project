@@ -1,3 +1,4 @@
+https://docs.microsoft.com/en-us/windows/wsl/tutorials/wsl-database
 Install PostgreSQL
 
 To install PostgreSQL on WSL (ie. Ubuntu):
