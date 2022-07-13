@@ -29,7 +29,8 @@ def harmonized_data(pathin, pathout):
         't' : 'temperature', 
         'pmean' : 'mean_precipitation',
         'msl' : 'air_pressure',
-        'Wsymb2' : 'weather_symbol'}
+        'Wsymb2' : 'weather_symbol',
+        'ws' : 'wind_speed'}
 
     df = pd.DataFrame(normalized_data)
     times = df['validTime']
