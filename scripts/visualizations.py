@@ -38,6 +38,25 @@ def temperature_plot():
 
     ax.set_title('red = 00:00:00, blue = 12:00:00')
 
-    plt.savefig(f'{OUT_DIR}/testplot.png')
+    plt.savefig(f'{OUT_DIR}/temperature.png')
 
-temperature_plot()
+
+def precipitation_pressure_plot():
+
+    df = pd.read_json(IN_FILE)
+
+    air_pressure = df['air_pressure']
+    precipitation = df['mean_precipitation']
+
+    fig, ax = plt.subplots()
+
+    ax.scatter(air_pressure, precipitation)
+    pressure_range = range(int(air_pressure.min()), round(air_pressure.max()+ 0.5) + 1)
+
+    ax.set(xlim=(air_pressure.min() - 1, air_pressure.max() + 1), xticks=pressure_range,
+       ylim=(-0.1, 1.1), yticks=[i/10 for i in range(0, 11)])
+
+    ax.set_xlabel('Air Pressure (hPa)')
+    ax.set_ylabel('Mean Precipitation (mm/h)')
+
+    plt.savefig(f'{OUT_DIR}/precipitation_pressure.png')
