@@ -1,4 +1,7 @@
+from itertools import groupby
 import json
+from logging.config import valid_ident
+from numpy import float32
 import pandas as pd
 
 
@@ -7,17 +10,33 @@ import pandas as pd
 # 	OUTPUT: ladda json data i path.out
 # 	RETURN Boolean
 
- 
+
 with open('data/raw/data.json', 'r') as f:
     json_data = json.load(f)
-    time_series = json_data['timeSeries'][0]
-    normalized_data = pd.json_normalize (
-    time_series,
-    record_path=['parameters'],
-    meta=['validTime'],
-    meta_prefix = 'config_params_',
-    record_prefix= 'parameter_'
-    )
-    df = pd.DataFrame(normalized_data)
+time_series = json_data['timeSeries']
+normalized_data = pd.json_normalize (
+time_series,
+record_path=['parameters'],
+meta=['validTime'])
 
-print (df)
+parameters = {
+        't' : 'temperature', 
+        'pmean' : 'mean_precipitation',
+        'msl' : 'air_pressure',
+        'Wsymb2' : 'weather_symbol'}
+
+df = pd.DataFrame(normalized_data)
+times = df['validTime']
+df = df[df['name'].isin(parameters.keys())]
+df = df.pivot(values='values', columns='name')
+df['date'] = times
+
+agg_func = {p:'first' for p in parameters}
+df = df.groupby('date', as_index=False).aggregate(agg_func)
+df.rename(columns = parameters, inplace = True)
+df = df.rename_axis(None, axis=1)
+
+# import numpy as np
+# df = df.astype( {"temperature": np.dtype("float")} , errors='raise') 
+
+print(df)
