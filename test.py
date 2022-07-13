@@ -1,5 +1,7 @@
 import unittest
 from scripts import api_to_raw
+from scripts import raw_to_harmonized
+
 
 class TestAll(unittest.TestCase):
 
@@ -23,6 +25,11 @@ class TestAll(unittest.TestCase):
         self.assertFalse(api_to_raw.get_data('https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/16.158/lat/58.5812/data.json',
         'data/bad_folder/data.json'))
         self.assertEqual('invalid path: data/bad_folder/data.json', api_to_raw.error_msg)
+
+    def test_raw_to_harmonize(self):
+        raw_to_harmonized.harmonized_data('data/raw/data.json')
+
+        
 
 if __name__ == '__main__':
     unittest.main()
