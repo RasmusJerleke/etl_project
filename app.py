@@ -41,14 +41,15 @@ def visualize():
         outdir = os.path.join(VIS_DIR, city)
         os.mkdir(outdir)
 
-        # for parameter in ('temperature', 'mean_precipitation', 'air_pressure'):
-        #     pathout = os.path.join(outdir, f'{parameter}.png')
-        #     visualizations.forecast_vis_line(pathin, pathout, city, parameter)
-        parameter = 'temperature'
-        visualizations.forecast_vis_line(pathin, os.path.join(outdir, f'{parameter}.png'), city, parameter)
+        for parameter in ('temperature', 'mean_precipitation', 'air_pressure'):
+            pathout = os.path.join(outdir, f'{parameter}.png')
+            visualizations.forecast_vis_line(pathin, pathout, city, parameter)
         
         visualizations.temperature_plot(pathin, os.path.join(outdir, 'temp_plot.png'))
         visualizations.precipitation_pressure_plot(pathin, os.path.join(outdir, 'prec_pres_plot.png'))
+
+        
+
 
 def load():
     pass

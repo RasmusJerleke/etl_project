@@ -53,6 +53,8 @@ def precipitation_pressure_plot(infile, outfile):
     ax.set_xlabel('Air Pressure (hPa)')
     ax.set_ylabel('Mean Precipitation (mm/h)')
 
+    plt.setp(ax.get_xticklabels(), rotation=30, ha='right')
+
     plt.savefig(outfile)
 
 def group_data_mean(pathin):
@@ -71,6 +73,7 @@ def group_data_min(pathin):
     return df_min
 
 def forecast_vis_line(pathin, pathout, city, parameter):
+    plt.figure()
     mean = group_data_mean(pathin)[parameter]
     max = group_data_max(pathin)[parameter]
     min = group_data_min(pathin)[parameter]
