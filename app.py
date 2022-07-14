@@ -48,15 +48,14 @@ def visualize():
         visualizations.temperature_plot(pathin, os.path.join(outdir, 'temp_plot.png'))
         visualizations.precipitation_pressure_plot(pathin, os.path.join(outdir, 'prec_pres_plot.png'))
     
-
-        
-
-
 def load():
     for file in os.listdir(HAR_DIR):
         pathin = os.path.join(HAR_DIR, file)
         city = file.split(".")[0]
-        harmonized_to_staged.load_db(pathin, city)
+        print(pathin, city)
+        if not harmonized_to_staged.load_db(pathin, city):
+            raise Exception('Cant load db')
+
 def clean():
     for dir in (RAW_DIR, HAR_DIR, VIS_DIR):
         if os.path.isdir(dir): rmtree(dir)
@@ -68,10 +67,10 @@ def setup():
 
 if __name__=='__main__':
 
-    clean()
-    setup()
+    # clean()
+    # setup()
 
-    extract()
-    transform()
-    visualize()
+    # extract()
+    # transform()
+    # visualize()
     load()
