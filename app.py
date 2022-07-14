@@ -47,6 +47,7 @@ def visualize():
         
         visualizations.temperature_plot(pathin, os.path.join(outdir, 'temp_plot.png'))
         visualizations.precipitation_pressure_plot(pathin, os.path.join(outdir, 'prec_pres_plot.png'))
+    
 
         
 
