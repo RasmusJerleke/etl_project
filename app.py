@@ -1,6 +1,8 @@
 from scripts import api_to_raw,harmonized_to_staged,raw_to_harmonized,visualizations
-import os
+import os, json
 from shutil import rmtree
+
+SILENT = False
 
 ROOT = os.path.dirname(os.path.realpath(__file__))
 RAW_DIR = os.path.join(ROOT, 'data/raw')
@@ -8,6 +10,7 @@ HAR_DIR = os.path.join(ROOT, 'data/harmonized')
 VIS_DIR = os.path.join(ROOT, 'visualizations')
 CONCAT_DATA_DIR = os.path.join(ROOT, 'data/concat')
 CONCAT_DATA_FILE = os.path.join(CONCAT_DATA_DIR, 'all_cities.json')
+SWE_CITIES_FILE = os.path.join(ROOT, 'res/se.json')
 ALL_DIRS = [RAW_DIR, HAR_DIR, VIS_DIR, CONCAT_DATA_DIR]
 
 COORDINATES = {
@@ -16,6 +19,13 @@ COORDINATES = {
     'Malmö'     : (55.60, 13.00)
 }
 
+def use_all_coordinates():
+    global COORDINATES
+    with open(SWE_CITIES_FILE, 'r') as f:
+        dict = json.load(f)
+    COORDINATES = { i['city'] : (i['lat'], i['lng']) for i in dict }
+
+
 def get_url(x,y):
     return f'https://opendata-download-metfcst.smhi.se/api\
 /category/pmp3g/version/2/geotype/point\
@@ -23,6 +33,7 @@ def get_url(x,y):
 
 def extract():
     for city, coords in COORDINATES.items():
+        if not SILENT : print(f'extracting data from {city}')
         url = get_url(*coords)
         pathout = os.path.join(RAW_DIR, f'{city}.json')
         if not api_to_raw.get_data(url, pathout):
@@ -30,6 +41,7 @@ def extract():
 
 def transform():
     for file in os.listdir(RAW_DIR):
+        if not SILENT : print(f'transforming {file}')
         pathin = os.path.join(RAW_DIR, file)
         pathout = os.path.join(HAR_DIR, file)
 
@@ -42,6 +54,7 @@ def transform():
 
 def visualize():
     for file in os.listdir(HAR_DIR):
+        if not SILENT : print(f'visualizing {file}')
         pathin = os.path.join(HAR_DIR, file)
 
         city = file.split('.')[0]
@@ -55,26 +68,31 @@ def visualize():
         visualizations.temperature_plot(pathin, os.path.join(outdir, 'temp_plot.png'))
         visualizations.precipitation_pressure_plot(pathin, os.path.join(outdir, 'prec_pres_plot.png'))
     
+    if not SILENT : print('visualizing all')
     outdir = os.path.join(VIS_DIR, 'all')
     os.mkdir(outdir)
     visualizations.precipitation_pressure_plot(CONCAT_DATA_FILE, os.path.join(outdir, 'prec_pres_plot.png'))
     
 def load():
     for file in os.listdir(HAR_DIR):
+        if not SILENT : print(f'loading {file}')
         pathin = os.path.join(HAR_DIR, file)
         city = file.split(".")[0]
         if not harmonized_to_staged.load_db(pathin, city):
             raise Exception('Cant load db')
 
 def clean():
+    if not SILENT : print(f'cleaning {ALL_DIRS}')
     for dir in ALL_DIRS:
         if os.path.isdir(dir): rmtree(dir)
 
 def setup():
+    if not SILENT : print(f'setting up {ALL_DIRS}')
     for dir in ALL_DIRS:
         os.makedirs(dir, exist_ok=True)
 
 if __name__=='__main__':
+    # use_all_coordinates() # uncomment to make api call for all 363 cities
     clean()
     setup()
 

@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 def temperature_plot(infile, outfile):
+    plt.figure()
     midnight = datetime.strptime('00:00:00', '%H:%M:%S').time()
     noon = datetime.strptime('12:00:00', '%H:%M:%S').time()
 
@@ -36,6 +37,7 @@ def temperature_plot(infile, outfile):
 
 
 def precipitation_pressure_plot(infile, outfile):
+    plt.figure()
     df = pd.read_json(infile)
     df = df[df['mean_precipitation'] > 0]
 
