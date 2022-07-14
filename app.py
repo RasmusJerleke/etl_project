@@ -92,11 +92,12 @@ def setup():
         os.makedirs(dir, exist_ok=True)
 
 if __name__=='__main__':
-    # use_all_coordinates() # uncomment to make api call for all 363 cities
+    SILENT = True # False for status messages
+    # use_all_coordinates() # uncomment to make api call for 363 cities
     clean()
     setup()
 
     extract()
     transform()
     visualize()
-    # load()
+    load()

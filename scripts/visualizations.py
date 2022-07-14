@@ -30,10 +30,10 @@ def temperature_plot(infile, outfile):
 
     ax.set_xlabel(f'Date ({df["date"].dt.date.min()} - {df["date"].dt.date.max()})')
     ax.set_ylabel('Celsius')
-
     ax.set_title('red = 00:00:00, blue = 12:00:00')
 
     plt.savefig(outfile)
+    plt.close('all')
 
 
 def precipitation_pressure_plot(infile, outfile):
@@ -56,8 +56,8 @@ def precipitation_pressure_plot(infile, outfile):
     ax.set_ylabel('Mean Precipitation (mm/h)')
 
     plt.setp(ax.get_xticklabels(), rotation=30, ha='right')
-
     plt.savefig(outfile)
+    plt.close('all')
 
 def group_data_mean(pathin):
     df = pd.read_json(pathin)
@@ -86,5 +86,6 @@ def forecast_vis_line(pathin, pathout, city, parameter):
     plt.setp(ax.get_xticklabels(), rotation=30, ha='right')
     plt.title(f"Daily {parameter} forecast for {city} - mean, max and min")
     plt.savefig(pathout)
+    plt.close('all')
 
 
