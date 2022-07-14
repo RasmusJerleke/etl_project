@@ -6,6 +6,9 @@ ROOT = os.path.dirname(os.path.realpath(__file__))
 RAW_DIR = os.path.join(ROOT, 'data/raw')
 HAR_DIR = os.path.join(ROOT, 'data/harmonized')
 VIS_DIR = os.path.join(ROOT, 'visualizations')
+CONCAT_DATA_DIR = os.path.join(ROOT, 'data/concat')
+CONCAT_DATA_FILE = os.path.join(CONCAT_DATA_DIR, 'all_cities.json')
+ALL_DIRS = [RAW_DIR, HAR_DIR, VIS_DIR, CONCAT_DATA_DIR]
 
 COORDINATES = {
     'Stockholm' : (59.32, 18.06),
@@ -32,6 +35,10 @@ def transform():
 
         if not raw_to_harmonized.harmonized_data(pathin, pathout):
             raise Exception('Failed to harmonize data.', raw_to_harmonized.error_msg)
+    
+
+    files = [os.path.join(HAR_DIR, file) for file in os.listdir(HAR_DIR)]
+    raw_to_harmonized.concat_data(files, CONCAT_DATA_FILE)
 
 def visualize():
     for file in os.listdir(HAR_DIR):
@@ -48,29 +55,30 @@ def visualize():
         visualizations.temperature_plot(pathin, os.path.join(outdir, 'temp_plot.png'))
         visualizations.precipitation_pressure_plot(pathin, os.path.join(outdir, 'prec_pres_plot.png'))
     
+    outdir = os.path.join(VIS_DIR, 'all')
+    os.mkdir(outdir)
+    visualizations.precipitation_pressure_plot(CONCAT_DATA_FILE, os.path.join(outdir, 'prec_pres_plot.png'))
+    
 def load():
     for file in os.listdir(HAR_DIR):
         pathin = os.path.join(HAR_DIR, file)
         city = file.split(".")[0]
-        print(pathin, city)
         if not harmonized_to_staged.load_db(pathin, city):
             raise Exception('Cant load db')
 
 def clean():
-    for dir in (RAW_DIR, HAR_DIR, VIS_DIR):
+    for dir in ALL_DIRS:
         if os.path.isdir(dir): rmtree(dir)
 
 def setup():
-    os.makedirs(RAW_DIR, exist_ok=True)
-    os.makedirs(HAR_DIR, exist_ok=True)
-    os.makedirs(VIS_DIR, exist_ok=True)
+    for dir in ALL_DIRS:
+        os.makedirs(dir, exist_ok=True)
 
 if __name__=='__main__':
+    clean()
+    setup()
 
-    # clean()
-    # setup()
-
-    # extract()
-    # transform()
-    # visualize()
-    load()
+    extract()
+    transform()
+    visualize()
+    # load()
