@@ -32,7 +32,7 @@ def temperature_plot(infile, outfile):
 
     ax.set_title('red = 00:00:00, blue = 12:00:00')
 
-    plt.savefig(f'{outfile}/temperature.png')
+    plt.savefig(outfile)
 
 
 def precipitation_pressure_plot(infile, outfile):
@@ -53,4 +53,4 @@ def precipitation_pressure_plot(infile, outfile):
     ax.set_xlabel('Air Pressure (hPa)')
     ax.set_ylabel('Mean Precipitation (mm/h)')
 
-    plt.savefig(f'{outfile}/precipitation_pressure.png')
+    plt.savefig(outfile)
