@@ -1,17 +1,12 @@
 from datetime import datetime
-import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-ROOT = os.path.abspath(os.path.join(__file__ ,"../.."))
-IN_FILE = os.path.join(ROOT, 'data/harmonized/data.json')
-OUT_DIR = os.path.join(ROOT, 'visualizations')
-
-def temperature_plot():
+def temperature_plot(infile, outfile):
     midnight = datetime.strptime('00:00:00', '%H:%M:%S').time()
     noon = datetime.strptime('12:00:00', '%H:%M:%S').time()
 
-    df = pd.read_json(IN_FILE)
+    df = pd.read_json(infile)
     df_noon = df[df['date'].dt.time == noon]
     df_mid = df[df['date'].dt.time == midnight]
 
@@ -37,11 +32,12 @@ def temperature_plot():
 
     ax.set_title('red = 00:00:00, blue = 12:00:00')
 
-    plt.savefig(f'{OUT_DIR}/temperature.png')
+    plt.savefig(outfile)
 
-def precipitation_pressure_plot():
 
-    df = pd.read_json(IN_FILE)
+def precipitation_pressure_plot(infile, outfile):
+
+    df = pd.read_json(infile)
 
     air_pressure = df['air_pressure']
     precipitation = df['mean_precipitation']
@@ -57,7 +53,7 @@ def precipitation_pressure_plot():
     ax.set_xlabel('Air Pressure (hPa)')
     ax.set_ylabel('Mean Precipitation (mm/h)')
 
-    plt.savefig(f'{OUT_DIR}/precipitation_pressure.png')
+    plt.savefig(outfile)
 
 def group_data_mean(city):
     df = pd.read_json(f'data/harmonized/{city}.json')
