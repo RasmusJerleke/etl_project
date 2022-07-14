@@ -77,7 +77,7 @@ def forecast_vis_line(pathin, pathout, city, parameter):
     ax= plt.subplot()
     plt.plot(mean.index, mean, marker = 'o')
     plt.plot(max.index, max, 'o:')
-    plt.plot(max.index, min, 'o:')
+    plt.plot(min.index, min, 'o:')
     plt.setp
     plt.setp(ax.get_xticklabels(), rotation=30, ha='right')
     plt.title(f"Daily {parameter} forecast for {city} - mean, max and min")
