@@ -1,6 +1,7 @@
 # Artifacts
 data/harmonized/*
 data/raw/*
+data/concat/*
 visualizations/*
 
 # Byte-compiled / optimized / DLL files

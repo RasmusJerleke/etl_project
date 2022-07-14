@@ -36,8 +36,8 @@ def temperature_plot(infile, outfile):
 
 
 def precipitation_pressure_plot(infile, outfile):
-
     df = pd.read_json(infile)
+    df = df[df['mean_precipitation'] > 0]
 
     air_pressure = df['air_pressure']
     precipitation = df['mean_precipitation']

@@ -59,3 +59,6 @@ def harmonized_data(pathin, pathout):
     return True
 
 
+def concat_data(files, path_out):
+    df = pd.concat((pd.read_json(f) for f in files), ignore_index=True)
+    df.to_json(path_out)
