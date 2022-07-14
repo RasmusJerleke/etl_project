@@ -1,6 +1,8 @@
+from http.server import SimpleHTTPRequestHandler
 from scripts import api_to_raw,harmonized_to_staged,raw_to_harmonized,visualizations
 import os, json, sys
 from shutil import rmtree
+import subprocess
 
 SILENT = False
 
@@ -20,6 +22,7 @@ COORDINATES = {
 }
 
 def use_all_coordinates():
+    if not SILENT : print(f'Adding cities')
     global COORDINATES
     with open(SWE_CITIES_FILE, 'r') as f:
         dict = json.load(f)
@@ -74,11 +77,12 @@ def visualize():
     visualizations.precipitation_pressure_plot(CONCAT_DATA_FILE, os.path.join(outdir, 'prec_pres_plot.png'))
     
 def load():
+    port = setup_psql()
     for file in os.listdir(HAR_DIR):
         if not SILENT : print(f'loading {file}')
         pathin = os.path.join(HAR_DIR, file)
         city = file.split(".")[0]
-        if not harmonized_to_staged.load_db(pathin, city):
+        if not harmonized_to_staged.load_db(pathin, city, port):
             raise Exception('Cant load db')
 
 def clean():
@@ -91,18 +95,25 @@ def setup():
     for dir in ALL_DIRS:
         os.makedirs(dir, exist_ok=True)
 
+def setup_psql():
+    res = subprocess.run(r'psql -U postgres -d weather_db -c "\conninfo"', shell=True, capture_output=True).stdout
+    if res == b'':
+        print('Starting psql...')
+        subprocess.run('sudo service postgresql start', shell=True)
+        return setup_psql() # tur vi har ctrl+c
+    return str(res).split(' ')[-1][1:-5]
+
+
+RUN = {
+    'c' : clean,
+    's' : setup,
+    'e' : extract,
+    't' : transform,
+    'v' : visualize,
+    'l' : load}
+
 if __name__=='__main__':
     SILENT = False # False for status messages
-    # use_all_coordinates() # uncomment to make api call for 363 cities
-    
+    #use_all_coordinates() # uncomment to make api call for 363 cities
     schedule = sys.argv[1] if len(sys.argv) > 1 else 'csetvl'
-    
-    run = {
-        'c' : clean(),
-        's' : setup(),
-        'e' : extract(),
-        't' : transform(),
-        'v' : visualize(),
-        'l' : load()}
-
-    [run[task] for task in schedule.lower()]
+    [RUN[task]() for task in schedule.lower()]

@@ -2,9 +2,9 @@ import pandas as pd
 import psycopg2
 import sqlalchemy
 
-def load_db(pathin, city):
-    engine = sqlalchemy.create_engine('postgresql+psycopg2://etl_user:123@localhost/weather_db')
-    #engine = sqlalchemy.create_engine("postgresql://localhost:5432/weather_db")
+def load_db(pathin, city, port):
+    engine = sqlalchemy.create_engine(f'postgresql+psycopg2://etl_user:123@localhost:{port}/weather_db')
+    # engine = sqlalchemy.create_engine("postgresql://localhost:5433/weather_db")
     try:
         df = pd.read_json(pathin) 
         df["city"] = city
