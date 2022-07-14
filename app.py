@@ -1,5 +1,5 @@
 from scripts import api_to_raw,harmonized_to_staged,raw_to_harmonized,visualizations
-import os, json
+import os, json, sys
 from shutil import rmtree
 
 SILENT = False
@@ -92,12 +92,17 @@ def setup():
         os.makedirs(dir, exist_ok=True)
 
 if __name__=='__main__':
-    SILENT = True # False for status messages
+    SILENT = False # False for status messages
     # use_all_coordinates() # uncomment to make api call for 363 cities
-    clean()
-    setup()
+    
+    schedule = sys.argv[1] if len(sys.argv) > 1 else 'csetvl'
+    
+    run = {
+        'c' : clean(),
+        's' : setup(),
+        'e' : extract(),
+        't' : transform(),
+        'v' : visualize(),
+        'l' : load()}
 
-    extract()
-    transform()
-    visualize()
-    load()
+    [run[task] for task in schedule.lower()]
