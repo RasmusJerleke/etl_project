@@ -10,7 +10,7 @@ VIS_DIR = os.path.join(ROOT, 'visualizations')
 COORDINATES = {
     'Stockholm' : (59.32, 18.06),
     'Göteborg'  : (57.70, 11.97),
-    'Malmö'     : (55.60, 13.00), 
+    'Malmö'     : (55.60, 13.00)
 }
 
 def get_url(x,y):
