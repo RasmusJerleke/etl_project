@@ -53,8 +53,10 @@ def visualize():
 
 
 def load():
-    pass
-
+    for file in os.listdir(HAR_DIR):
+        pathin = os.path.join(HAR_DIR, file)
+        city = file.split(".")[0]
+        harmonized_to_staged.load_db(pathin, city)
 def clean():
     for dir in (RAW_DIR, HAR_DIR, VIS_DIR):
         if os.path.isdir(dir): rmtree(dir)
