@@ -2,6 +2,7 @@ from scripts import api_to_raw,harmonized_to_staged,raw_to_harmonized,visualizat
 import os, json
 from shutil import rmtree
 import subprocess
+from multiprocessing.dummy import Pool as ThreadPool 
 
 ROOT = os.path.dirname(os.path.realpath(__file__))
 RAW_DIR = os.path.join(ROOT, 'data/raw')
@@ -32,15 +33,18 @@ class Etl:
     def get_url(self,x,y):
         return f'https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/{y}/lat/{x}/data.json'
 
+    def start_data_thread(self, data):
+        url, pathout = data[0], data[1]
+        if not self.silent : print(f'extracting data from {pathout.split("/")[-1][:-5]}')
+        api_to_raw.get_data(url, pathout)
+
     def extract(self, all=True):
         coordinates = self.get_all_coordinates() if all else self.get_default_coordinates()
-
-        for city, coords in coordinates.items():
-            if not self.silent : print(f'extracting data from {city}')
-            url = self.get_url(*coords)
-            pathout = os.path.join(RAW_DIR, f'{city}.json')
-            if not api_to_raw.get_data(url, pathout):
-                raise Exception('Failed to extract data.', api_to_raw.error_msg)
+        request_data = [(self.get_url(*coords), os.path.join(RAW_DIR, f'{city}.json')) for city, coords in coordinates.items()]
+        pool = ThreadPool(150)
+        pool.map(self.start_data_thread, request_data)
+        pool.close()
+        pool.join() 
 
     def transform(self):
         for file in os.listdir(RAW_DIR):
@@ -115,7 +119,7 @@ class Etl:
 
 if __name__=='__main__':
     etl = Etl()
-    etl.silent = False
+    etl.silent = True
     etl.clean()
     etl.setup()
     etl.extract()
