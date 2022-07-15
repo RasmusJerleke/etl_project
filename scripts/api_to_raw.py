@@ -5,17 +5,21 @@ import requests, json, os
 # 	ARGS: url, path(data/raw)
 # 	OUTPUT: ladda json-data i path
 # 	RETURN: Boolean 
-
+# TIMEOUT = 1
 error_msg = ''
 
 def get_data(url:str, path:str) -> bool:
     global error_msg
     # try make api request
-    try:
-        r = requests.get(url)
-    except: # if fail, return False
-        error_msg = f'failed to make request to url: {url}'
-        return False
+    request_tries = 5
+    for i in range(request_tries):
+        try:
+            r = requests.get(url, timeout=1)
+        except: # if fail, return False
+            error_msg = f'failed to make request to url: {url}'
+            return False
+        if r.status_code == 200:
+            break
 
     # if response status code is not 200, return False
     if r.status_code != 200:
