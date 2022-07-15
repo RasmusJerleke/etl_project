@@ -1,12 +1,6 @@
 import json, os
 import pandas as pd
 
-
-# 2. skapa funktion som omvandlar raw data till harmoniserad data i raw_to_harmonized.py
-# 	ARGS: path.in, path.out
-# 	OUTPUT: ladda json data i path.out
-# 	RETURN Boolean
-
 error_msg = ''
 
 def harmonized_data(pathin, pathout):
@@ -57,7 +51,6 @@ def harmonized_data(pathin, pathout):
     #everything worked
     error_msg = None
     return True
-
 
 def concat_data(files, path_out):
     df = pd.concat((pd.read_json(f) for f in files), ignore_index=True)

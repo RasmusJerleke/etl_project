@@ -35,7 +35,6 @@ def temperature_plot(infile, outfile):
     plt.savefig(outfile)
     plt.close('all')
 
-
 def precipitation_pressure_plot(infile, outfile):
     plt.figure()
     df = pd.read_json(infile)

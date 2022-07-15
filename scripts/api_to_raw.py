@@ -1,11 +1,6 @@
 import requests, json, os
 # https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/16.158/lat/58.5812/data.json
 
-# 1. skapa funktion för att hämta api data i api_to_raw.py
-# 	ARGS: url, path(data/raw)
-# 	OUTPUT: ladda json-data i path
-# 	RETURN: Boolean 
-# TIMEOUT = 1
 error_msg = ''
 
 def get_data(url:str, path:str) -> bool:

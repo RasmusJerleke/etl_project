@@ -12,7 +12,7 @@ etl = Etl()
 def prepare():
     global etl
     etl = Etl()
-    etl.SILENT = True
+    etl.silent = True
     # etl.use_all_coordinates()
     etl.clean()
     etl.setup()
