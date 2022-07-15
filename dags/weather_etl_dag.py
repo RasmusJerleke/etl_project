@@ -1,10 +1,9 @@
 from platform import python_branch
 import sys, os
 sys.path.insert(1, os.path.abspath(os.path.join(__file__ ,"../..")))
-from app import Etl #extract, transform, visualize, load, use_all_coordinates, setup, clean
+from app import Etl
 from airflow import DAG
-from airflow.operators.python import PythonOperator, BranchPythonOperator
-from airflow.operators.bash import BashOperator
+from airflow.operators.python import PythonOperator
 from datetime import datetime
 
 etl = Etl()
@@ -13,9 +12,11 @@ def prepare():
     global etl
     etl = Etl()
     etl.silent = True
-    etl.use_all_coordinates()
     etl.clean()
     etl.setup()
+
+def extract():
+    etl.extract(all=True)
 
 with DAG("etl", start_date=datetime(2021,1,1),
     schedule_interval="0 0 * * *", catchup=False) as dag:
@@ -27,7 +28,7 @@ with DAG("etl", start_date=datetime(2021,1,1),
 
     extract_task = PythonOperator(
         task_id='extract_task',
-        python_callable = etl.extract
+        python_callable = extract
     )
 
     transform_task = PythonOperator(

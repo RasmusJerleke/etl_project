@@ -16,24 +16,26 @@ class Etl:
 
     def __init__(self):
         self.silent = False
-        self.COORDINATES = {
+        
+    def get_all_coordinates(self):
+        with open(SWE_CITIES_FILE, 'r') as f:
+            dict = json.load(f)
+        return { i['city'] : (i['lat'], i['lng']) for i in dict }
+
+    def get_default_coordinates(self):
+        return {
             'Stockholm' : (59.32, 18.06),
             'Göteborg'  : (57.70, 11.97),
             'Malmö'     : (55.60, 13.00)
         }
 
-    def use_all_coordinates(self):
-        if not self.silent : print(f'Adding cities')
-        self.COORDINATES
-        with open(SWE_CITIES_FILE, 'r') as f:
-            dict = json.load(f)
-        self.COORDINATES = { i['city'] : (i['lat'], i['lng']) for i in dict }
-
     def get_url(self,x,y):
         return f'https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/{y}/lat/{x}/data.json'
 
-    def extract(self):
-        for city, coords in self.COORDINATES.items():
+    def extract(self, all=True):
+        coordinates = self.get_all_coordinates() if all else self.get_default_coordinates()
+
+        for city, coords in coordinates.items():
             if not self.silent : print(f'extracting data from {city}')
             url = self.get_url(*coords)
             pathout = os.path.join(RAW_DIR, f'{city}.json')
@@ -114,7 +116,6 @@ class Etl:
 if __name__=='__main__':
     etl = Etl()
     etl.silent = False
-    etl.use_all_coordinates()
     etl.clean()
     etl.setup()
     etl.extract()
