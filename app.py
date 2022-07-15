@@ -1,4 +1,3 @@
-from http.server import SimpleHTTPRequestHandler
 from scripts import api_to_raw,harmonized_to_staged,raw_to_harmonized,visualizations
 import os, json, sys
 from shutil import rmtree
@@ -102,7 +101,6 @@ def setup_psql():
         subprocess.run('sudo service postgresql start', shell=True)
         return setup_psql() # tur vi har ctrl+c
     return str(res).split(' ')[-1][1:-5]
-
 
 RUN = {
     'c' : clean,
