@@ -73,7 +73,9 @@ def group_data_min(pathin):
     df_min = df.groupby(pd.Grouper(key='date', axis=0, freq='D', sort=True)).min()
     return df_min
 
-def forecast_vis_line(pathin, pathout, city, parameter):
+def forecast_vis_line(pathin, pathout):#, city, parameter):
+    city = pathin.split('/')[-1][:-5]
+    parameter = pathout.split('/')[-1][:-4]
     plt.figure()
     mean = group_data_mean(pathin)[parameter]
     max = group_data_max(pathin)[parameter]

@@ -18,7 +18,7 @@ def prepare():
     etl.setup()
 
 with DAG("etl", start_date=datetime(2021,1,1),
-    schedule_interval="*/10 * * * *", catchup=False) as dag:
+    schedule_interval="0 0 * * *", catchup=False) as dag:
 
     setup_task = PythonOperator(
         task_id = 'setup_task',

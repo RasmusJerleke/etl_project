@@ -10,15 +10,16 @@ def get_data(url:str, path:str) -> bool:
     for i in range(request_tries):
         try:
             r = requests.get(url, timeout=1)
-        except: # if fail, return False
-            error_msg = f'failed to make request to url: {url}'
-            return False
+        except Exception as e: # if fail, return False
+            print(e)
+            error_msg = f'failed to make request to url: {url}. EXC: {e}. status_code = {r.status_code}'
+            continue
         if r.status_code == 200:
             break
 
     # if response status code is not 200, return False
     if r.status_code != 200:
-        error_msg = f'status code not 200. Actual code = {r.status_code}'
+        # error_msg = f'status code not 200. Actual code = {r.status_code}'
         return False 
 
     # convert response to json
