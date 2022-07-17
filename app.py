@@ -16,7 +16,7 @@ ALL_DIRS = [RAW_DIR, HAR_DIR, VIS_DIR, CONCAT_DATA_DIR]
 class Etl:
 
     def __init__(self):
-        self.silent = False
+        self.silent = True
         
     def get_all_coordinates(self):
         with open(SWE_CITIES_FILE, 'r') as f:
@@ -62,33 +62,13 @@ class Etl:
         try:
             func(pathin, pathout)
         except:
-            print(f'{pathout} could not be plotted.')
+            if not self.silent : print(f'{pathout} could not be plotted.')
 
     def visualize(self):
-        for file in os.listdir(HAR_DIR):
-            if not self.silent : print(f'visualizing {file}')
-            pathin = os.path.join(HAR_DIR, file)
-
-            city = file.split('.')[0]
-            outdir = os.path.join(VIS_DIR, city)
-            os.mkdir(outdir)
-
-            for parameter in ('temperature', 'mean_precipitation', 'air_pressure'):
-                pathout = os.path.join(outdir, f'{parameter}.png')
-                self.try_plot(visualizations.forecast_vis_line, pathin, pathout)
-
-            self.try_plot(visualizations.temperature_plot, pathin, os.path.join(outdir, 'temp_plot.png'))
-            self.try_plot(visualizations.precipitation_pressure_plot, pathin, os.path.join(outdir, 'prec_pres_plot.png'))
-
-        if not self.silent : print('visualizing all')
-        outdir = os.path.join(VIS_DIR, 'all')
-        os.mkdir(outdir)
-        self.try_plot(visualizations.precipitation_pressure_plot, CONCAT_DATA_FILE, os.path.join(outdir, 'prec_pres_plot.png'))
-
-        for parameter in ('temperature', 'mean_precipitation', 'air_pressure'):
-            pathout = os.path.join(outdir, f'{parameter}.png')
-            self.try_plot(visualizations.forecast_vis_line, CONCAT_DATA_FILE, pathout)
-        
+        to_visualize = [(os.path.join(HAR_DIR, file), os.path.join(VIS_DIR, file.split('.')[0])) for file in os.listdir(HAR_DIR)]
+        to_visualize.append((CONCAT_DATA_FILE, os.path.join(VIS_DIR, 'all')))
+        [os.mkdir(path[1]) for path in to_visualize]
+        visualizations.fast_vis(to_visualize)
 
     def load(self):
         port = self.setup_psql()
@@ -119,10 +99,10 @@ class Etl:
 
 if __name__=='__main__':
     etl = Etl()
-    etl.silent = True
+    etl.silent = False
     etl.clean()
     etl.setup()
-    etl.extract()
+    etl.extract(all=True)
     etl.transform()
     etl.visualize()
     etl.load()

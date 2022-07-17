@@ -1,0 +1,1 @@
+psql -U postgres -d weather_db -c "drop table weather_forecast;"
