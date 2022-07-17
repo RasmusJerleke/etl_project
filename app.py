@@ -58,17 +58,12 @@ class Etl:
         files = [os.path.join(HAR_DIR, file) for file in os.listdir(HAR_DIR)]
         raw_to_harmonized.concat_data(files, CONCAT_DATA_FILE)
 
-    def try_plot(self, func, pathin, pathout):
-        try:
-            func(pathin, pathout)
-        except:
-            if not self.silent : print(f'{pathout} could not be plotted.')
-
     def visualize(self):
+        if not self.silent : print(f'Visualizing')
         to_visualize = [(os.path.join(HAR_DIR, file), os.path.join(VIS_DIR, file.split('.')[0])) for file in os.listdir(HAR_DIR)]
         to_visualize.append((CONCAT_DATA_FILE, os.path.join(VIS_DIR, 'all')))
         [os.mkdir(path[1]) for path in to_visualize]
-        visualizations.fast_vis(to_visualize)
+        visualizations.forecast_vis_line(to_visualize)
 
     def load(self):
         port = self.setup_psql()
@@ -99,7 +94,7 @@ class Etl:
 
 if __name__=='__main__':
     etl = Etl()
-    etl.silent = False
+    etl.silent = True
     etl.clean()
     etl.setup()
     etl.extract(all=True)

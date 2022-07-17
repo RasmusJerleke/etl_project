@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import os
 
-def fast_vis(to_plot):
+def forecast_vis_line(to_plot):
     ax = plt.subplot()
 
     for paths in to_plot:
