@@ -25,7 +25,7 @@ with DAG("etl", start_date=datetime(2021,1,1),
 
     reset_db_task = BashOperator(
         task_id = 'reset_db_task',
-        bash_command='psql -U postgres -d weather_db -c "drop table weather_forecast;"'
+        bash_command='psql -U postgres -d weather_db -c "drop table weather_forecast cascade;"'
     )
 
     setup_task = PythonOperator(
