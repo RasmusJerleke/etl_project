@@ -11,7 +11,6 @@ def get_data(url:str, path:str) -> bool:
         try:
             r = requests.get(url, timeout=1)
         except Exception as e: # if fail, return False
-            print(e)
             error_msg = f'failed to make request to url: {url}. EXC: {e}'
             continue
         if r.status_code == 200:
